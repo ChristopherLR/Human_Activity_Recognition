@@ -9,22 +9,11 @@ from sklearn.metrics import make_scorer, accuracy_score, confusion_matrix
 from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV
 
-#Commented by: James Xi Zheng 12/Aug/2019
-#please create functions to do the following jobs
-#1. load dataset ->  sample code availalable in the workshops
-#2. visualize data -> sample code given
-#3. remove signal noises -> sample code given
-#4. extract features -> sample code given
-#5. prepare training set -> sample code given 
-#6. training the given models -> sample code given
-#7. test the given models -> sample code given
-#8. print out the evaluation results -> sample code given
 
-#as I said in the lecture, the sample code is completed in a un-professional software engineering style
-#software refactoring is required
-#please manage the project using SCRUM sprints and manage the source code using Github
-#document your progress and think critically what are missing from such IoT application and what are missing to move such IoT application from PoC (proof of concept) to solve real-world life
-#think with which components added, what kind of real-world problems can be solved by it -> this shall be discussed in the conclusion part in the document
+def load_dataset(filename):
+    df = pd.read_csv(filename, sep=',', header=None)
+    return df
+
 
 '''
 At first, we should explore the raw time-series sensor data. We could draw line plot of sensor signals.
