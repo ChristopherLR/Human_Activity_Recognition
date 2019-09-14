@@ -90,36 +90,27 @@ class Dataset:
 
 
 def extract_features(activity, features, window_len):
-    train, test = train_test_split(activity, shuffle=False)
-    training = {}
-    testing = {}
 
-    train_intervals = math.floor(len(train) / window_len)
-    test_intervals = math.floor(len(test) / window_len)
+    training = {}
+
+    train_intervals = math.floor(len(activity) / window_len)
 
     feature_len = len(features)
 
     idx = 0
-    for column in range(len(train.columns)):
+    for column in range(len(activity.columns)):
 
         for n in range(feature_len):
             training[n + idx] = []
-            testing[n + idx] = []
         for window in range(train_intervals):
-            sample = train[[column]][window * window_len:(window + 1) * window_len].values
+            sample = activity[[column]][window * window_len:(window + 1) * window_len].values
             for f_idx, fn in enumerate(features):
                 training[idx + f_idx].append(fn(sample))
 
-        for window in range(test_intervals):
-            sample = test[[column]][window * window_len:(window + 1) * window_len].values
-            for f_idx, fn in enumerate(features):
-                testing[idx + f_idx].append(fn(sample))
         idx = idx + feature_len
+    train, test = train_test_split(pd.DataFrame(training), shuffle=False)
 
-    training = pd.DataFrame(training)
-    testing = pd.DataFrame(testing)
-
-    return training, testing
+    return pd.DataFrame(train), pd.DataFrame(test)
 
 
 
