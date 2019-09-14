@@ -31,6 +31,21 @@ class Dataset:
         self.bicycling_50_watt = extract_sensors(activities.get_group(11))
         self.bicycling_100_watt = extract_sensors(activities.get_group(12))
         self.rope_jumping = extract_sensors(activities.get_group(13))
+        self.all = [
+            (self.sitting['all'], 'sitting'),
+            (self.lying['all'], 'lying'),
+            (self.standing['all'], 'standing'),
+            (self.washing_dishes['all'], 'washing_dishes'),
+            (self.vacuuming['all'], 'vacuuming'),
+            (self.sweeping['all'], 'sweeping'),
+            (self.walking_outside['all'], 'walking_outside'),
+            (self.ascending_stairs['all'], 'ascending_stairs'),
+            (self.descending_stairs['all'], 'descending_stairs'),
+            (self.treadmill_running['all'], 'treadmill_running'),
+            (self.bicycling_50_watt['all'], 'bicycling_50_watt'),
+            (self.bicycling_100_watt['all'], 'bicycling_50_watt'),
+            (self.rope_jumping['all'], 'rope_jumping')
+        ]
 
     def extract_sensors(self, reduce):
         activities = self.activities
@@ -47,6 +62,37 @@ class Dataset:
         self.bicycling_50_watt = extract_sensors(activities.get_group(11), reduce)
         self.bicycling_100_watt = extract_sensors(activities.get_group(12), reduce)
         self.rope_jumping = extract_sensors(activities.get_group(13), reduce)
+        self.all = [
+            (self.sitting['all'], 'sitting'),
+            (self.lying['all'], 'lying'),
+            (self.standing['all'], 'standing'),
+            (self.washing_dishes['all'], 'washing_dishes'),
+            (self.vacuuming['all'], 'vacuuming'),
+            (self.sweeping['all'], 'sweeping'),
+            (self.walking_outside['all'], 'walking_outside'),
+            (self.ascending_stairs['all'], 'ascending_stairs'),
+            (self.descending_stairs['all'], 'descending_stairs'),
+            (self.treadmill_running['all'], 'treadmill_running'),
+            (self.bicycling_50_watt['all'], 'bicycling_50_watt'),
+            (self.bicycling_100_watt['all'], 'bicycling_100_watt'),
+            (self.rope_jumping['all'], 'rope_jumping')
+        ]
+
+    def extract_all_features(self, features, window_len):
+
+        activity_0, name_0 = self.all[0]
+        training, testing = extract_features(activity_0, features, window_len)
+        training['activity'] = name_0
+        testing['activity'] = name_0
+
+        for activity, name in self.all[1:]:
+            train, test = extract_features(activity, features, window_len)
+            test['activity'] = name
+            train['activity'] = name
+            testing = testing.append(test)
+            training = training.append(train)
+
+        return training, testing
 
 
 def extract_features(activity, features, window_len):
@@ -80,9 +126,6 @@ def extract_features(activity, features, window_len):
     testing = pd.DataFrame(testing)
 
     return training, testing
-
-
-
 
 
 
