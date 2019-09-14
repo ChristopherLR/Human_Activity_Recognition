@@ -1,6 +1,6 @@
 import pandas as pd
-from scipy import signal
 import math
+from scipy import signal
 from sklearn.model_selection import GridSearchCV, train_test_split
 
 
