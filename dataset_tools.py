@@ -1,12 +1,6 @@
-import numpy as np
 import pandas as pd
 from scipy import signal
-import matplotlib.pyplot as plt
 import math
-from sklearn import preprocessing
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import make_scorer, accuracy_score, confusion_matrix
-from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV, train_test_split
 
 
