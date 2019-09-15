@@ -1,10 +1,13 @@
 import pandas as pd
 import math
 from scipy import signal
-from sklearn.model_selection import GridSearchCV, train_test_split
+from sklearn.model_selection import train_test_split
 
 
 class Dataset:
+    """
+    The Dataset Class acts as a way to abstract the movement data for easier processing
+    """
     def __init__(self, dataset_path):
         df = load_dataset(dataset_path)
         df.columns = list(range(24)) + ['type']
@@ -42,6 +45,10 @@ class Dataset:
         ]
 
     def extract_sensors(self, reduce):
+        """
+        The Extract Sensors function reprocesses the data,
+        it allows for further data to be removed with the reduce parameter
+        """
         activities = self.activities
         self.sitting = extract_sensors(activities.get_group(1), reduce)
         self.lying = extract_sensors(activities.get_group(2), reduce)
@@ -73,6 +80,12 @@ class Dataset:
         ]
 
     def extract_all_features(self, features, window_len):
+        """
+        extract all features runs over every activity and extracts the features
+        :param features: a list of features that are to be extracted
+        :param window_len: the number of rows to extract the features on
+        :return: returns a training and testing split of the extracted features
+        """
 
         activity_0, name_0 = self.all[0]
         training, testing = extract_features(activity_0, features, window_len)
@@ -90,7 +103,12 @@ class Dataset:
 
 
 def extract_features(activity, features, window_len):
-
+    """
+    :param activity: The dataset that the features are extracted from
+    :param features: A list of features to be extracted
+    :param window_len: The number of rows used for one feature
+    :return: returns a dataframe for the testing and training split
+    """
     training = {}
 
     train_intervals = math.floor(len(activity) / window_len)
@@ -113,15 +131,24 @@ def extract_features(activity, features, window_len):
     return pd.DataFrame(train), pd.DataFrame(test)
 
 
-
 def load_dataset(filename):
+    """
+    Used to process the initial dataset
+    :param filename: The path of the file
+    :return: returns a pandas dataframe
+    """
     df = pd.read_csv(filename, sep=',', header=None)
     return df
 
 
-# Extract each sensor and separate into body location
-# - reduce drops initial rows that may contain undesirable data
 def extract_sensors(df, reduce=500):
+    """
+    Extract Sensors is used in the dataset class to create and easier to access dictionary for each movement.
+    It also helps remove erroneous or unwanted data.
+    :param df: The dataframe for the features to be extracted from
+    :param reduce: the number of rows to remove from the beginning of the dataframe
+    :return: returns a dictionary of all the sensors for that specific activity
+    """
     sensor_dict = dict({'wrist': {}, 'chest': {}, 'hip': {}, 'ankle': {}})
     reduced_dict = df.iloc[reduce:].reset_index(drop=True)
     sensor_dict['all'] = reduced_dict.drop('type', axis=1)
@@ -150,6 +177,13 @@ def extract_sensors(df, reduce=500):
 
 
 def lowpass_filter(data, order, cutoff, sampling_rate=200):
+    """
+    The lowpass filter function removes the unwanted noise from the data on the underlying dataset.
+    :param data: The data to be filtered
+    :param order: The order of the data
+    :param cutoff: The cutoff on the frequency spectrum to be removed
+    :param sampling_rate: The sampling rate of the data
+    """
     nyquist_rate = sampling_rate / 2
     Wn = cutoff / nyquist_rate
     b, a = signal.butter(order, Wn, 'lowpass', analog=False)
